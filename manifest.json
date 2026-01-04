@@ -1,0 +1,30 @@
+{
+  "name": "Dropped - Link Manager",
+  "short_name": "Dropped",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#004aad",
+  "theme_color": "#004aad",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/7046/7046086.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/7046/7046086.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "share_target": {
+    "action": "./index.html",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}

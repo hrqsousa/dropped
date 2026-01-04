@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Regra para a coleção de usuários
+    // O {userId} é uma variável que representa o ID do documento
+    match /users/{userId}/{document=**} {
+      
+      // Permitir leitura e escrita APENAS se o ID do usuário logado (request.auth.uid)
+      // for igual ao ID do documento que ele está tentando acessar ({userId})
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
