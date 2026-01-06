@@ -47,15 +47,28 @@ const webviewCloseBtn = document.getElementById('webview-close-btn');
 const webviewExternalBtn = document.getElementById('webview-external-btn');
 let currentWebviewUrl = null;
 
+// -- New Settings UI --
+const loadingOverlay = document.getElementById('loading-overlay');
+const settingsBtn = document.getElementById('settings-btn');
+const settingsView = document.getElementById('settings-view');
 
-const userProfileBtn = document.getElementById('user-profile-btn');
-const themeToggleBtn = document.getElementById('theme-toggle');
+const settingsThemeToggle = document.getElementById('settings-theme-toggle');
+const settingsBrowserToggle = document.getElementById('settings-browser-toggle');
+const authBtn = document.getElementById('auth-btn');
+const settingsAvatar = document.getElementById('settings-avatar');
+const settingsName = document.getElementById('settings-name');
+const settingsEmail = document.getElementById('settings-email');
+
+// Legacy references (removed from HTML but kept null-safe if needed, or we just remove usage)
+// const userProfileBtn = ... (Deleted)
+// const themeToggleBtn = ... (Deleted)
 
 // -- Init --
 function init() {
     try {
         setupEventListeners();
-        setupTheme();
+        setupSettings(); // New
+        setupTheme();    // Updates toggle state
         startClock();
         checkShareHandler();
         initDataLayer();
@@ -113,7 +126,12 @@ function initDataLayer() {
         console.error("Firebase Init Error:", e);
         loadLocalData();
         renderAll();
+        hideLoader(); // Fallback
     }
+}
+
+function hideLoader() {
+    if (loadingOverlay) loadingOverlay.classList.add('hidden');
 }
 
 if (document.readyState === 'loading') {
@@ -123,18 +141,22 @@ if (document.readyState === 'loading') {
 }
 
 // -- Theme --
+// -- Theme --
 function setupTheme() {
     try {
         const savedTheme = localStorage.getItem('theme');
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
 
-        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        if (isDark) {
             document.body.classList.add('dark-theme');
-            updateThemeIcon('dark');
         } else {
             document.body.classList.remove('dark-theme');
-            updateThemeIcon('light');
         }
+
+        // Sync Switch
+        if (settingsThemeToggle) settingsThemeToggle.checked = isDark;
+
     } catch (e) { }
 }
 
@@ -142,13 +164,17 @@ function toggleTheme() {
     document.body.classList.toggle('dark-theme');
     const isDark = document.body.classList.contains('dark-theme');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    updateThemeIcon(isDark ? 'dark' : 'light');
 }
 
-function updateThemeIcon(mode) {
-    if (!themeToggleBtn) return;
-    const iconSpan = themeToggleBtn.querySelector('span');
-    if (iconSpan) iconSpan.textContent = mode === 'dark' ? 'light_mode' : 'dark_mode';
+// -- Browser Pref --
+function setupSettings() {
+    const useInApp = localStorage.getItem('useInAppBrowser') !== 'false'; // Default True
+    if (settingsBrowserToggle) settingsBrowserToggle.checked = useInApp;
+}
+
+function toggleBrowserPref() {
+    const shouldUse = settingsBrowserToggle.checked;
+    localStorage.setItem('useInAppBrowser', shouldUse);
 }
 
 // -- Auth --
@@ -161,7 +187,9 @@ function setupAuthListener() {
             if (unsubscribeFirestore) unsubscribeFirestore();
             items = [];
             loadLocalData();
+            loadLocalData();
             renderAll();
+            hideLoader();
         }
     });
 }
@@ -174,6 +202,7 @@ function subscribeToFirestore() {
             items.push({ id: doc.id, ...doc.data() });
         });
         renderAll();
+        hideLoader();
     }, (error) => console.warn("Firestore sync:", error));
 }
 
@@ -261,7 +290,21 @@ async function fetchMetadata(url) {
 }
 
 // -- Open In App --
+// -- Open In App --
 function performOpenUrl(url) {
+    // 0. Check Preference
+    const useInApp = localStorage.getItem('useInAppBrowser') !== 'false';
+
+    // 1. YouTube always tries embed if possible (or follows pref? Let's say YT always In-App best exp)
+    // Actually, user might want to open YT app. Let's respect pref for everything except maybe YT Embeds if they are cool.
+    // But simplified:
+
+    // If not using in-app, just open blank
+    if (!useInApp) {
+        window.open(url, '_blank');
+        return;
+    }
+
     // 1. Check YouTube for Embed
     const ytId = getYouTubeID(url);
     if (ytId) {
@@ -270,8 +313,7 @@ function performOpenUrl(url) {
         return;
     }
 
-    // 2. Normal URL - Try Iframe, fallback is the external button
-    // Many sites block iframes (X-Frame-Options), but some reading sites allow.
+    // 2. Normal URL
     openWebview(url, url, new URL(url).hostname);
 }
 
@@ -448,15 +490,32 @@ function showAlert(title, message) {
 
 
 // -- UI Utils --
+// -- UI Utils --
 function updateUserProfileUI() {
-    if (!userProfileBtn) return;
-    const avatarEl = userProfileBtn.querySelector('.avatar');
-    if (!avatarEl) return;
+    // Update Settings Card
+    if (!authBtn) return;
 
-    if (user && user.photoURL) {
-        avatarEl.innerHTML = `<img src="${user.photoURL}" style="width:100%; height:100%; border-radius:50%; object-fit: cover;">`;
+    if (user) {
+        authBtn.textContent = "Sign Out";
+        authBtn.classList.add('danger'); // Make it look like a logout button (optional styling)
+
+        if (settingsName) settingsName.textContent = user.displayName || "User";
+        if (settingsEmail) settingsEmail.textContent = user.email;
+
+        if (settingsAvatar) {
+            if (user.photoURL) {
+                settingsAvatar.innerHTML = `<img src="${user.photoURL}">`;
+            } else {
+                settingsAvatar.innerHTML = `<span class="material-symbols-outlined">person</span>`;
+            }
+        }
     } else {
-        avatarEl.innerHTML = `<span class="material-symbols-outlined">person</span>`;
+        authBtn.textContent = "Sign In with Google";
+        authBtn.classList.remove('danger');
+
+        if (settingsName) settingsName.textContent = "Guest User";
+        if (settingsEmail) settingsEmail.textContent = "Not logged in";
+        if (settingsAvatar) settingsAvatar.innerHTML = `<span class="material-symbols-outlined">person</span>`;
     }
 }
 
@@ -472,10 +531,53 @@ function startClock() {
 }
 
 // -- Event Listeners --
+// -- Event Listeners --
 function setupEventListeners() {
-    if (themeToggleBtn) {
-        themeToggleBtn.removeEventListener('click', toggleTheme);
-        themeToggleBtn.addEventListener('click', toggleTheme);
+    // Settings Button (Opens Overlay)
+    const settingsOverlay = document.getElementById('settings-overlay');
+    const settingsBackBtn = document.getElementById('settings-back-btn');
+
+    if (settingsBtn && settingsOverlay) {
+        settingsBtn.addEventListener('click', () => {
+            settingsOverlay.classList.add('open');
+        });
+    }
+
+    // Settings Back Button
+    if (settingsBackBtn && settingsOverlay) {
+        settingsBackBtn.addEventListener('click', () => {
+            settingsOverlay.classList.remove('open');
+        });
+    }
+
+    // Settings Toggles
+    if (settingsThemeToggle) {
+        settingsThemeToggle.addEventListener('change', toggleTheme);
+    }
+    if (settingsBrowserToggle) {
+        settingsBrowserToggle.addEventListener('change', toggleBrowserPref);
+    }
+
+    // Auth Button
+    if (authBtn) {
+        authBtn.addEventListener('click', () => {
+            if (!isFirebaseReady) {
+                showAlert("Aviso", "Firebase offline. Usando modo local.");
+                return;
+            }
+            if (user) {
+                if (confirm("Sign out?")) auth.signOut();
+            } else {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                auth.signInWithPopup(provider).catch(e => {
+                    if (window.location.protocol === 'file:') {
+                        showAlert("Login Indisponível", "Erro em localhost/file. Use um servidor.");
+                    } else {
+                        showAlert("Falha no Login", e.message);
+                    }
+                });
+            }
+        });
     }
 
     if (tabButtons) {
@@ -570,23 +672,10 @@ function setupEventListeners() {
         }
     });
 
-    // User Profile
+    // User Profile (Legacy code removed, handled by authBtn now)
+    /*
     if (userProfileBtn) userProfileBtn.addEventListener('click', () => {
-        if (!isFirebaseReady) {
-            showAlert("Aviso", "Firebase offline. Usando modo local.");
-            return;
-        }
-        if (user) {
-            if (confirm("Sign out?")) auth.signOut();
-        } else {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).catch(e => {
-                if (window.location.protocol === 'file:') {
-                    showAlert("Login Indisponível", "Você está usando uma versão local do app (arquivo .html), por isso o login do Google foi bloqueado pelo navegador por segurança.");
-                } else {
-                    showAlert("Falha no Login", "Não foi possível conectar: " + e.message);
-                }
-            });
-        }
+        ...
     });
+    */
 }

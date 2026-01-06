@@ -1,11 +1,11 @@
-const CACHE_NAME = 'dropped-app-v2';
+const CACHE_NAME = 'dropped-app-v3';
 const ASSETS = [
     './',
     './index.html',
     './style.css',
     './app.js',
     './manifest.json',
-    'https://cdn-icons-png.flaticon.com/512/7046/7046086.png',
+    './assets/icon.png',
     'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap',
     'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0',
     'https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js',

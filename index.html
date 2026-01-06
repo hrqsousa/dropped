@@ -9,8 +9,7 @@
 
     <title>Dropped</title>
 
-    <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%23004aad%22><path d=%22M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z%22/></svg>">
+    <link rel="icon" type="image/png" href="./assets/icon.png">
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -32,25 +31,27 @@
 </head>
 
 <body>
+    <!-- Loading Screen -->
+    <div id="loading-overlay">
+        <div class="loader-logo">
+            <img src="./assets/icon.png" alt="Dropped Logo" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div class="loader-text">Loading Dropped</div>
+    </div>
 
     <header>
         <div class="header-active-row">
             <div class="header-branding">
-                <div class="app-logo">
-                    <span class="material-symbols-outlined" style="font-size: 20px;">bookmark</span>
+                <div class="app-logo" style="background: transparent; padding: 0;">
+                    <img src="./assets/icon.png" alt="Logo"
+                        style="width: 100%; height: 100%; object-fit:contain; border-radius: 8px;">
                 </div>
-                <span class="app-name">Dropped</span>
             </div>
 
             <div class="header-actions">
-                <button class="icon-btn" id="theme-toggle" aria-label="Toggle Dark Mode">
-                    <span class="material-symbols-outlined">dark_mode</span>
+                <button class="icon-btn" id="settings-btn" aria-label="Settings">
+                    <span class="material-symbols-outlined">settings</span>
                 </button>
-                <div class="user-profile" id="user-profile-btn">
-                    <div class="avatar">
-                        <span class="material-symbols-outlined">person</span>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -81,7 +82,67 @@
         <section id="reading-view" class="view-section">
             <!-- Reading Items injected by JS -->
         </section>
+
     </main>
+
+    <!-- Settings Full Screen Overlay -->
+    <div id="settings-overlay" class="settings-overlay">
+        <div class="settings-page-header">
+            <button class="icon-btn" id="settings-back-btn">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </button>
+            <h2 class="title-large">Settings</h2>
+            <div style="width: 40px;"></div> <!-- Spacer for centering -->
+        </div>
+
+        <div class="settings-content-scroll">
+            <div class="settings-container">
+                <!-- User Profile Card -->
+                <div class="settings-card">
+                    <div class="settings-header">
+                        <div class="profile-large" id="settings-avatar">
+                            <span class="material-symbols-outlined">person</span>
+                        </div>
+                        <div>
+                            <div class="user-name" id="settings-name">Guest User</div>
+                            <div class="user-email" id="settings-email">Not logged in</div>
+                        </div>
+                        <button class="btn btn-filled" id="auth-btn" style="margin-top:12px;">Sign In with
+                            Google</button>
+                    </div>
+                </div>
+
+                <!-- App Settings -->
+                <div class="settings-card">
+                    <div class="settings-item">
+                        <div class="settings-label">
+                            <span class="material-symbols-outlined">dark_mode</span>
+                            Dark Mode
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="settings-theme-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-item">
+                        <div class="settings-label">
+                            <span class="material-symbols-outlined">open_in_new</span>
+                            In-App Browser
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="settings-browser-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="version-info">
+                    Dropped v1.1.0
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Floating Action Button -->
     <button class="fab" id="add-btn">
