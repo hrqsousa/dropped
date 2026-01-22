@@ -85,17 +85,14 @@
 
     </main>
 
-    <!-- Settings Full Screen Overlay -->
-    <div id="settings-overlay" class="settings-overlay">
-        <div class="settings-page-header">
-            <button class="icon-btn" id="settings-back-btn">
-                <span class="material-symbols-outlined">arrow_back</span>
-            </button>
-            <h2 class="title-large">Settings</h2>
-            <div style="width: 40px;"></div> <!-- Spacer for centering -->
-        </div>
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="headline-small">Settings</h2>
+                <span class="material-symbols-outlined" style="cursor:pointer;" id="close-settings-modal">close</span>
+            </div>
 
-        <div class="settings-content-scroll">
             <div class="settings-container">
                 <!-- User Profile Card -->
                 <div class="settings-card">
@@ -103,11 +100,11 @@
                         <div class="profile-large" id="settings-avatar">
                             <span class="material-symbols-outlined">person</span>
                         </div>
-                        <div>
+                        <div style="text-align: center;">
                             <div class="user-name" id="settings-name">Guest User</div>
                             <div class="user-email" id="settings-email">Not logged in</div>
                         </div>
-                        <button class="btn btn-filled" id="auth-btn" style="margin-top:12px;">Sign In with
+                        <button class="btn btn-filled" id="auth-btn" style="margin-top:12px; width: 100%;">Sign In with
                             Google</button>
                     </div>
                 </div>
@@ -137,8 +134,8 @@
                     </div>
                 </div>
 
-                <div class="version-info">
-                    Dropped v1.1.0
+                <div class="version-info" style="margin-top: 24px;">
+                    Dropped v1.2.0
                 </div>
             </div>
         </div>
@@ -160,12 +157,20 @@
             <form id="add-form">
                 <div class="form-group">
                     <label>Type</label>
-                    <div style="display: flex; gap: 10px; margin-top: 8px;">
-                        <label style="display: flex; align-items: center; gap: 4px; font-size: 14px; cursor: pointer;">
-                            <input type="radio" name="item-type" value="bookmark" checked> Bookmark
+                    <div class="type-selector-grid">
+                        <label class="type-option-card">
+                            <input type="radio" name="item-type" value="bookmark" checked>
+                            <div class="type-card-content">
+                                <span class="material-symbols-outlined">grid_view</span>
+                                <span>Bookmark</span>
+                            </div>
                         </label>
-                        <label style="display: flex; align-items: center; gap: 4px; font-size: 14px; cursor: pointer;">
-                            <input type="radio" name="item-type" value="reading"> Reading List
+                        <label class="type-option-card">
+                            <input type="radio" name="item-type" value="reading">
+                            <div class="type-card-content">
+                                <span class="material-symbols-outlined">menu_book</span>
+                                <span>Reading List</span>
+                            </div>
                         </label>
                     </div>
                 </div>
@@ -213,6 +218,23 @@
                 <button type="button" class="btn btn-filled" id="alert-ok-btn">OK</button>
             </div>
         </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div id="context-menu">
+        <button class="context-menu-item" id="ctx-pin">
+            <span class="material-symbols-outlined">push_pin</span>
+            <span id="ctx-pin-text">Pin to Top</span>
+        </button>
+        <button class="context-menu-item" id="ctx-edit">
+            <span class="material-symbols-outlined">edit</span>
+            Edit
+        </button>
+        <div class="context-divider"></div>
+        <button class="context-menu-item danger" id="ctx-delete">
+            <span class="material-symbols-outlined">delete</span>
+            Delete
+        </button>
     </div>
 
     <!-- Webview Modal (In-App Browser) -->
