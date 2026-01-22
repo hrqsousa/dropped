@@ -32,7 +32,10 @@ const modalTitle = document.querySelector('.modal-header h2');
 
 const confirmOverlay = document.getElementById('confirm-modal');
 const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
-const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+const confirmActionBtn = document.getElementById('confirm-action-btn'); // Renamed
+const confirmTitle = document.getElementById('confirm-title');
+const confirmMsg = document.getElementById('confirm-msg');
+let confirmCallback = null;
 
 const alertOverlay = document.getElementById('alert-modal');
 const alertTitleEl = document.getElementById('alert-title');
@@ -599,14 +602,34 @@ function openEditModal(item) {
 
 function requestDelete(id) {
     pendingDeleteId = id;
+    showConfirmDialog(
+        "Delete Item?",
+        "Are you sure you want to delete this item?",
+        "Delete",
+        () => {
+            if (pendingDeleteId) {
+                deleteItem(pendingDeleteId);
+                pendingDeleteId = null;
+            }
+        },
+        true // isDanger
+    );
+}
+
+function showConfirmDialog(title, msg, btnText, callback, isDanger = false) {
+    if (confirmTitle) confirmTitle.textContent = title;
+    if (confirmMsg) confirmMsg.textContent = msg;
+    if (confirmActionBtn) {
+        confirmActionBtn.textContent = btnText;
+        if (isDanger) confirmActionBtn.classList.add('danger');
+        else confirmActionBtn.classList.remove('danger');
+    }
+    confirmCallback = callback;
     confirmOverlay.classList.add('open');
 }
 
-function confirmDelete() {
-    if (pendingDeleteId) {
-        deleteItem(pendingDeleteId);
-        pendingDeleteId = null;
-    }
+function onConfirmAction() {
+    if (confirmCallback) confirmCallback();
     confirmOverlay.classList.remove('open');
 }
 
@@ -709,7 +732,13 @@ function setupEventListeners() {
                 return;
             }
             if (user) {
-                if (confirm("Sign out?")) auth.signOut();
+                showConfirmDialog(
+                    "Sign Out?",
+                    "Are you sure you want to sign out?",
+                    "Sign Out",
+                    () => auth.signOut(),
+                    false // Not danger (no red button needed, or maybe neutral?)
+                );
             } else {
                 const provider = new firebase.auth.GoogleAuthProvider();
                 auth.signInWithPopup(provider).catch(e => {
@@ -773,7 +802,7 @@ function setupEventListeners() {
     if (confirmOverlay) confirmOverlay.addEventListener('click', (e) => {
         if (e.target === confirmOverlay) confirmOverlay.classList.remove('open');
     });
-    if (confirmDeleteBtn) confirmDeleteBtn.addEventListener('click', confirmDelete);
+    if (confirmActionBtn) confirmActionBtn.addEventListener('click', onConfirmAction);
 
     if (alertOkBtn) alertOkBtn.addEventListener('click', () => alertOverlay.classList.remove('open'));
     if (alertOverlay) alertOverlay.addEventListener('click', (e) => {

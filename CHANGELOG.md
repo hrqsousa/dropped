@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.1] - 2026-01-22
+
+### Added
+- **Update Notification**: Implemented a "New Version Available" toast message that allows users to instantly reload the app when an update is detected.
+- **Custom Confirm Modals**: Replaced native browser alerts with custom, app-styled confirmation modals for "Sign Out" and "Delete Item".
+
 ## [1.2.0] - 2026-01-22
 
 ### Added
