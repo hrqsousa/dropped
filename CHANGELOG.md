@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3] - 2026-01-23
+
+### Fixed
+- **Toggle Icons**: Fixed a character encoding issue where settings toggles displayed "5CA" text instead of the checkmark icon.
+- **Reading List Grid**: Forced the grid layout to correctly apply, preventing the list from being stuck in a single-column flex layout.
+- **Update Notification**: Further refined the toast visibility logic to ensure it's hidden by default.
+
 ## [1.2.2] - 2026-01-23
 
 ### Fixed

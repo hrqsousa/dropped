@@ -309,6 +309,15 @@ main {
     padding-bottom: 80px;
 }
 
+/* Reading View - Explicit Grid Overwrite */
+#reading-view.active {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    padding-bottom: 80px;
+    flex-direction: unset;
+}
+
 /* Pinned & Others Sections */
 .section-title-divider {
     display: flex;
@@ -347,15 +356,6 @@ main {
 .reading-item.drag-over {
     /* outline: 2px dashed var(--md-sys-color-primary); */
 }
-
-
-.view-section#reading-view.active {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 24px;
-    padding-bottom: 80px;
-}
-
 
 /* Cards */
 /* Card Actions (Removed, replaced by Context Menu) */
@@ -1172,7 +1172,7 @@ input:checked+.slider:before {
 
     /* Icon Logic */
     font-family: 'Material Symbols Outlined';
-    content: "\\e5ca";
+    content: "\e5ca";
     /* Checkmark */
     display: flex;
     align-items: center;
