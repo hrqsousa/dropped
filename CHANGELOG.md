@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.3.1] - 2026-01-23
+
+### Fixed
+- **Reading List Structure**: Removed a conflicting inline grid wrapper from the JavaScript logic that was preventing the CSS grid rules from applying correctly. This ensures the reading list now properly flows as a responsive grid on all screen sizes.
+
 ## [1.2.3] - 2026-01-23
 
 ### Fixed

@@ -500,16 +500,18 @@ function renderReadingList() {
         return;
     }
 
-    const grid = document.createElement('div');
-    grid.style.display = 'grid';
-    grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(300px, 1fr))';
-    grid.style.gap = '24px';
+    // Clear container
+    readingContainer.innerHTML = '';
 
+    if (readingItems.length === 0) {
+        readingContainer.innerHTML = '<div style="grid-column: 1/-1; text-align: center; opacity: 0.6; padding-top: 40px;">No items in reading list</div>';
+        return;
+    }
+
+    // Append items directly (CSS handles grid on #reading-view)
     readingItems.forEach(item => {
-        grid.appendChild(createReadingCard(item));
+        readingContainer.appendChild(createReadingCard(item));
     });
-
-    readingContainer.appendChild(grid);
 }
 
 function createReadingCard(item) {
