@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2] - 2026-01-23
+
+### Fixed
+- **Update Notification**: Fixed a CSS corruption issue that caused the "New Version" toast to appear unstyled and effectively broken. The notification is now correctly hidden until an update is found and displays with the intended Material You design.
+- **Reading List Layout**: Fixed an overflow issue that caused the reading list grid to collapse into a single column with an ugly scrollbar. It now correctly fills the available width with a responsive grid.
+- **Scrollbars**: Added custom, slim scrollbar styles to match the app's dark theme, removing the jarring default white scrollbar.
+
 ## [1.2.1] - 2026-01-22
 
 ### Added
