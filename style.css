@@ -310,12 +310,14 @@ main {
 }
 
 /* Reading View - Explicit Grid Overwrite */
+/* Reading View - Explicit Grid Overwrite */
 #reading-view.active {
     display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 24px;
     padding-bottom: 80px;
     flex-direction: unset;
+    width: 100%;
 }
 
 /* Pinned & Others Sections */
